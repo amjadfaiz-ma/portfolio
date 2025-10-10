@@ -16,67 +16,46 @@ body {
 	 */
   font: 100%/1.5 system-ui;
   margin-inline: max(1em, (100% - 100ch) / 2);
-  /* Make the nav bar a flex container */
-  /* Navigation container */
-  nav a.current {
+  /* NAVIGATION BAR */
+nav {
+    display: flex;
+    justify-content: center; /* center the nav items horizontally */
+    border-bottom: 1px solid oklch(80% 3% 200);
+    background-color: #f7f7f7;
+    margin-bottom: 2em;
+    padding: 1em 0;
+}
+
+/* Navigation list as a flex container */
+nav ul {
+    display: flex; /* this makes the links go side-by-side */
+    gap: 2em; /* spacing between items */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navigation links */
+nav a {
+    text-decoration: none; 
+    color: inherit; 
+    text-align: center; 
+    padding: 0.5em; 
+    transition: all 0.3s ease;
+    border-bottom: 0.4em solid transparent; /* keep layout consistent */
+}
+
+/* Hover effect using accent color */
+nav a:hover {
+    border-bottom: 0.4em solid var(--color-accent);
+    background-color: oklch(from var(--color-accent) 95% 5% h);
+}
+
+/* Current page link */
+nav a.current {
     border-bottom: 0.4em solid var(--color-accent);
     padding-bottom: 0.1em;
     font-weight: 600;
     color: var(--color-accent);
-  } 
-
-  nav {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      /* visual separation from content */
-      margin-bottom: 2em;
-
-      /* subtle bottom border */
-      border-bottom: 1px solid oklch(80% 3% 200);
-      background-color: #f7f7f7;
-      padding: 1em 0;
-  }
-
-  /* Horizontal navigation list */
-  nav ul {
-      display: flex;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      justify-content: center;
-  }
-
-  /* Each list item expands equally */
-  nav li {
-      flex: 1;
-      text-align: center;
-  }
-
-  /* Link styling */
-  nav a {
-      display: block;
-      text-decoration: none;     /* remove underline */
-      color: inherit;            /* inherit parent color */
-      text-align: center;        /* center the text */
-      padding: 0.5em;            /* add spacing */
-      transition: all 0.3s ease;
-  }
-
-  /* Hover state: slightly darken */
-  nav a:hover {
-      background-color: oklch(92% 4% 200);
-  }
-
-  /* Current page link */
-  nav a.current {
-      border-bottom: 0.4em solid oklch(80% 3% 200);  /* thick bottom border */
-      padding-bottom: 0.1em;                         /* adjust to balance height */
-      font-weight: 600;
-      color: oklch(40% 10% 200);                     /* optional accent text color */
-  }
-
+}
 }
