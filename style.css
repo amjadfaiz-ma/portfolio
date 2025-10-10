@@ -5,7 +5,7 @@ html {
   accent-color: var(--color-accent);
 
   /* Base text */
-  color: oklch(30% 4% 250);
+  color: oklch(32.866% 0.01795 248.425);
   font-family: system-ui, sans-serif;
 }
 
