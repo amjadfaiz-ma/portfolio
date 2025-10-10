@@ -72,3 +72,68 @@ nav a.current {
   font-weight: 600;
   color: var(--color-accent);
 }
+
+/* -----------------------
+   CONTACT FORM — Step 3
+   ----------------------- */
+
+/* Step 3.1: Make controls use site typography */
+input, textarea, button {
+  font: inherit;
+}
+
+/* Step 3.3: CSS Grid layout with subgrid */
+form {
+  /* Grid container for the whole form: labels left, inputs right */
+  display: grid;
+  grid-template-columns: auto 1fr; /* label column fits text; input column grows */
+  gap: 1em;                        /* spacing between rows/cols */
+  max-width: 60rem;                /* optional: prevent the form from getting too wide */
+}
+
+/* Each field (a label that contains its control) spans the full row */
+form .field {
+  display: grid;
+  grid-template-columns: subgrid;  /* inherit the two columns from the form */
+  grid-column: 1 / -1;             /* make the field span both columns of the form */
+  align-items: center;             /* vertically center label text vs. control */
+}
+
+/* The label text lives in column 1 */
+form .field > span {
+  grid-column: 1;
+}
+
+/* The control lives in column 2; make it full width and include padding/border in width */
+form .field > input,
+form .field > textarea {
+  grid-column: 2;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5em;
+  border: 1px solid oklch(85% 3% 200);
+  border-radius: 0.25rem;
+}
+
+/* Submit button spans full width of the grid; align it to the start (left) */
+form .form-submit {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0.6em 1.2em;
+  border: 1px solid var(--color-accent);
+  background: oklch(from var(--color-accent) 95% 5% h);
+  color: var(--color-accent);
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.2s ease, color 0.2s ease;
+}
+
+form .form-submit:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+form .form-submit:active {
+  transform: translateY(1px);
+}
+

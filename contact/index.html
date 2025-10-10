@@ -22,17 +22,24 @@
   <!-- Page content -->
   <h1>Contact Me</h1>
 
+  <!-- Wrap inputs inside labels so we can use subgrid cleanly -->
   <form action="mailto:amuhamadafandy@ucsd.edu" method="POST" enctype="text/plain">
-    <label for="email">Email:</label>
-    <input name="email" id="email" type="email" required>
+    <label class="field" for="email">
+      <span>Email</span>
+      <input name="email" id="email" type="email" required />
+    </label>
 
-    <label for="subject">Subject:</label>
-    <input name="subject" id="subject" required>
+    <label class="field" for="subject">
+      <span>Subject</span>
+      <input name="subject" id="subject" required />
+    </label>
 
-    <label for="body">Message:</label>
-    <textarea name="body" id="body" rows="6" required></textarea>
+    <label class="field" for="body">
+      <span>Message</span>
+      <textarea name="body" id="body" rows="6" required></textarea>
+    </label>
 
-    <button type="submit">Submit</button>
+    <button type="submit" class="form-submit">Submit</button>
   </form>
 
 </body>
