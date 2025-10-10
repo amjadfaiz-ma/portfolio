@@ -1,51 +1,71 @@
+/* Global theme */
 html {
+  /* Lab: define an accent color; using blue as requested */
   --color-accent: oklch(65% 50% 250);
   accent-color: var(--color-accent);
+
+  /* Base text */
   color: oklch(30% 4% 250);
   font-family: system-ui, sans-serif;
 }
 
-/* keep body simple and CLOSED here */
+/* Body defaults */
 body {
   font: 100%/1.5 system-ui;
   margin-inline: max(1em, (100% - 100ch) / 2);
 }
 
-/* NAVIGATION (top-level, not inside body) */
+/* NAVIGATION */
 nav {
+  /* visual separation from content */
+  margin-bottom: 2em;
+
+  /* subtle bottom border (cool gray) */
+  border-bottom: 1px solid oklch(80% 3% 200);
+
+  /* layout */
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid oklch(80% 3% 200);
-  background: #f7f7f7;
-  margin-bottom: 2em;
+
+  /* background + padding */
+  background-color: #f7f7f7;
   padding: 1em 0;
 }
 
+/* Make links horizontal */
 nav ul {
-  display: flex;        /* makes items horizontal */
-  gap: 2em;             /* spacing between links */
+  display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
+
+  /* space between items; remove if you prefer equal-width tabs */
+  gap: 2em;
 }
 
+/* If you want equal-width tabs instead of gap spacing, use:
+nav li { flex: 1; }
+and remove `gap` above. */
 nav li { flex: 0 0 auto; }
 
+/* Link styling per lab */
 nav a {
   display: block;
-  text-decoration: none;
-  color: inherit;
-  text-align: center;
-  padding: 0.5em;
-  border-bottom: 0.4em solid transparent; /* keeps height consistent */
-  transition: all .25s ease;
+  text-decoration: none;       /* remove underline */
+  color: inherit;              /* remove default link color */
+  text-align: center;          /* center text in its box */
+  padding: 0.5em;              /* spacing */
+  border-bottom: 0.4em solid transparent; /* preserve layout height */
+  transition: all 0.25s ease;
 }
 
+/* Hover: use accent color and light background with same hue */
 nav a:hover {
   border-bottom: 0.4em solid var(--color-accent);
-  background: oklch(from var(--color-accent) 95% 5% h);
+  background-color: oklch(from var(--color-accent) 95% 5% h);
 }
 
+/* Current page link: thick bottom border, reduced padding-bottom */
 nav a.current {
   border-bottom: 0.4em solid var(--color-accent);
   padding-bottom: 0.1em;
