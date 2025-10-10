@@ -5,51 +5,59 @@ body {
   font: 100%/1.5 system-ui;
   margin-inline: max(1em, (100% - 100ch) / 2);
   /* Make the nav bar a flex container */
+  /* Navigation container */
   nav {
       display: flex;
-      flex-direction: column; /* stack title, image, etc. under nav links */
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+
+      /* visual separation from content */
+      margin-bottom: 2em;
+
+      /* subtle bottom border */
+      border-bottom: 1px solid oklch(80% 3% 200);
       background-color: #f7f7f7;
-      padding: 20px;
+      padding: 1em 0;
   }
 
-  /* The list of links */
+  /* Horizontal navigation list */
   nav ul {
       display: flex;
-      list-style-type: none;
+      list-style: none;
       padding: 0;
       margin: 0;
       width: 100%;
+      justify-content: center;
   }
 
-  /* Each list item expands evenly */
+  /* Each list item expands equally */
   nav li {
       flex: 1;
       text-align: center;
   }
 
-  /* Style the links */
+  /* Link styling */
   nav a {
       display: block;
-      text-decoration: none;
-      color: #333;
-      font-weight: 500;
-      padding: 10px 0;
-      transition: background 0.3s, color 0.3s;
+      text-decoration: none;     /* remove underline */
+      color: inherit;            /* inherit parent color */
+      text-align: center;        /* center the text */
+      padding: 0.5em;            /* add spacing */
+      transition: all 0.3s ease;
   }
 
-  /* Highlight when hovered */
+  /* Hover state: slightly darken */
   nav a:hover {
-      background-color: #e0e0e0;
-      color: #000;
+      background-color: oklch(92% 4% 200);
   }
 
-  /* Style the current page link differently */
+  /* Current page link */
   nav a.current {
-      background-color: #333;
-      color: #fff;
+      border-bottom: 0.4em solid oklch(80% 3% 200);  /* thick bottom border */
+      padding-bottom: 0.1em;                         /* adjust to balance height */
       font-weight: 600;
+      color: oklch(40% 10% 200);                     /* optional accent text color */
   }
 
 }
