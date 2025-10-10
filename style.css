@@ -137,3 +137,57 @@ form .form-submit:active {
   transform: translateY(1px);
 }
 
+/* -----------------------
+   PROJECTS PAGE — Step 4
+   ----------------------- */
+
+/* Step 4.2: Responsive grid for .projects */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+  margin-block: 2em;
+}
+
+/* Step 4.3: Align article contents using subgrid */
+.projects article {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  background: oklch(98% 2% 200);
+  padding: 1em;
+  border: 1px solid oklch(90% 3% 200);
+  border-radius: 0.4em;
+}
+
+/* Headings inside articles */
+.projects h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* Images inside articles */
+.projects img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Paragraphs */
+.projects p {
+  margin: 0;
+}
+
+/* Step 4.4: Heading hierarchy and typographic polish */
+h1 {
+  font-size: 400%;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+h2, h3, h4, h5, h6 {
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+
