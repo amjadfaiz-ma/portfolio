@@ -18,6 +18,13 @@ body {
   margin-inline: max(1em, (100% - 100ch) / 2);
   /* Make the nav bar a flex container */
   /* Navigation container */
+  nav a.current {
+    border-bottom: 0.4em solid var(--color-accent);
+    padding-bottom: 0.1em;
+    font-weight: 600;
+    color: var(--color-accent);
+  } 
+
   nav {
       display: flex;
       flex-direction: column;
