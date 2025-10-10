@@ -1,3 +1,15 @@
+html {
+    /* Define a global accent color variable (blue tone) */
+    --color-accent: oklch(65% 50% 250);
+
+    /* Make accent color available to form controls, etc. */
+    accent-color: var(--color-accent);
+
+    /* Base text color */
+    color: oklch(30% 4% 250);
+    font-family: system-ui, sans-serif;
+}
+
 body {
   /* Set line height to 1.5 times the font size
 	   and use the OS’s UI font as the website font
