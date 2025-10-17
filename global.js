@@ -101,3 +101,34 @@ select.addEventListener('input', function (event) {
   // Apply the color-scheme to the root <html> element
   document.documentElement.style.setProperty('color-scheme', value);
 });
+
+/* ---------------------------
+   Step 4.5: Save + restore theme
+   --------------------------- */
+
+// Grab the <select> we injected earlier
+const select = document.querySelector('.color-scheme select');
+
+// Single source of truth: apply theme + save it
+function setColorScheme(colorScheme) {
+  document.documentElement.style.setProperty('color-scheme', colorScheme);
+  localStorage.colorScheme = colorScheme; // persist
+}
+
+// 1) Restore saved preference on load (if any)
+if ("colorScheme" in localStorage) {
+  // Use saved value
+  setColorScheme(localStorage.colorScheme);
+  // Keep the UI in sync with what we're using
+  select.value = localStorage.colorScheme;
+} else {
+  // Default to automatic if nothing is saved
+  setColorScheme('light dark');
+  select.value = 'light dark';
+}
+
+// 2) Save & apply when user changes the dropdown
+select.addEventListener('input', (event) => {
+  setColorScheme(event.target.value);
+  console.log('color scheme changed to', event.target.value);
+});
