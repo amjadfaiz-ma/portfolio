@@ -129,3 +129,34 @@ select.addEventListener('input', (event) => {
   setColorScheme(event.target.value);
   console.log('color scheme changed to', event.target.value);
 });
+
+/* -----------------------------------------
+   Step 5: Better contact form (Optional)
+   ----------------------------------------- */
+
+// Find a mailto form on the page (optional chaining avoids errors on pages without a form)
+const form = document.querySelector('form[action^="mailto:"]');
+
+form?.addEventListener('submit', (event) => {
+  // Stop the browser’s default submit (which would do the + encoding)
+  event.preventDefault();
+
+  const data = new FormData(form);
+
+  // Build query string with proper percent-encoding
+  const params = [];
+  for (const [name, value] of data) {
+    if (!value) continue; // skip empty fields
+
+    // If you kept a "from" or "email" field by mistake, ignore it:
+    if (name.toLowerCase() === 'email' || name.toLowerCase() === 'from') continue;
+
+    params.push(`${encodeURIComponent(name)}=${encodeURIComponent(value)}`);
+  }
+
+  // Compose the mailto URL
+  const url = `${form.action}?${params.join('&')}`;
+
+  // Open the user’s email client with prefilled fields
+  location.href = url;
+});

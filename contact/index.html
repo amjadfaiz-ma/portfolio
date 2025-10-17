@@ -12,24 +12,19 @@
   <h1>Contact Me</h1>
 
   <!-- Wrap inputs inside labels so we can use subgrid cleanly -->
-  <form action="mailto:amuhamadafandy@ucsd.edu" method="POST" enctype="text/plain">
-    <label class="field" for="email">
-      <span>Email</span>
-      <input name="email" id="email" type="email" required />
-    </label>
+  <form action="mailto:amuhamadafandy@ucsd.edu" method="GET">
+  <label class="field" for="subject">
+    <span>Subject</span>
+    <input name="subject" id="subject" required />
+  </label>
 
-    <label class="field" for="subject">
-      <span>Subject</span>
-      <input name="subject" id="subject" required />
-    </label>
+  <label class="field" for="body">
+    <span>Message</span>
+    <textarea name="body" id="body" rows="6" required></textarea>
+  </label>
 
-    <label class="field" for="body">
-      <span>Message</span>
-      <textarea name="body" id="body" rows="6" required></textarea>
-    </label>
-
-    <button type="submit" class="form-submit">Submit</button>
-  </form>
+  <button type="submit" class="form-submit">Submit</button>
+</form>
 
   <script type="module" src="../global.js"></script>
 </body>
