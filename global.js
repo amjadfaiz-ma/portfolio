@@ -106,9 +106,6 @@ select.addEventListener('input', function (event) {
    Step 4.5: Save + restore theme
    --------------------------- */
 
-// Grab the <select> we injected earlier
-const select = document.querySelector('.color-scheme select');
-
 // Single source of truth: apply theme + save it
 function setColorScheme(colorScheme) {
   document.documentElement.style.setProperty('color-scheme', colorScheme);
