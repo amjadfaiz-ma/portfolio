@@ -78,7 +78,7 @@ nav a.current {
    ----------------------- */
 
 /* Step 3.1: Make controls use site typography */
-input, textarea, button {
+input, textarea, button, select {
   font: inherit;
 }
 
@@ -213,6 +213,28 @@ nav a:hover {
 /* 4) Current stays the same */
 nav a.current {
   /* your existing rule is fine */
+}
+
+/* -----------------------
+   Step 4.3: Dark mode switcher position
+   ----------------------- */
+
+label.color-scheme {
+  position: absolute;   /* take it out of the normal flow */
+  top: 1rem;            /* distance from the top edge */
+  right: 1rem;          /* distance from the right edge */
+  font-size: 80%;       /* make it a bit smaller */
+  font-family: inherit; /* match site typography */
+  background: oklch(from canvas 95% 2% h / 70%);
+  padding: 0.25em 0.5em;
+  border-radius: 0.4em;
+  backdrop-filter: blur(4px);
+}
+
+label.color-scheme select {
+  font: inherit;   /* inherit same font as site */
+  margin-left: 0.25em;
+  padding: 0.25em;
 }
 
 
