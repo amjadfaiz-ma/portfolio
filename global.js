@@ -51,3 +51,37 @@ for (const p of pages) {
   li.appendChild(a);
   ul.appendChild(li);
 }
+
+/* ---------------------------
+   Step 4.2: Dark mode switch
+   --------------------------- */
+
+// Insert the dropdown menu at the top of <body>
+document.body.insertAdjacentHTML(
+  "afterbegin",
+  `
+  <label class="color-scheme">
+    Theme:
+    <select id="theme-select">
+      <option value="light dark">Automatic</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </label>
+  `
+);
+
+// Reference the select element
+const themeSelect = document.querySelector("#theme-select");
+
+// When user changes theme, update the <html> color-scheme property
+themeSelect.addEventListener("change", (event) => {
+  document.documentElement.style.colorScheme = event.target.value;
+});
+
+// Detect OS preference for initial labeling (optional enhancement)
+if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+  console.log("User prefers dark mode");
+} else {
+  console.log("User prefers light mode");
+}
