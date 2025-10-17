@@ -202,6 +202,7 @@ nav {
   --border-color: oklch(50% 10% 200 / 40%);
   border-bottom: 1px solid var(--border-color);
   /* keep your other nav styles */
+  background-color: color-mix(in oklch, canvas, var(--color-accent) 15%);
 }
 
 /* 3) Hover background that works in both modes */
