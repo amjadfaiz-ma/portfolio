@@ -85,3 +85,19 @@ if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
 } else {
   console.log("User prefers light mode");
 }
+
+/* ---------------------------
+   Step 4.4: Make dark mode switch work
+   --------------------------- */
+
+// Get reference to the <select> element inside our color-scheme label
+const select = document.querySelector('.color-scheme select');
+
+// Listen for input changes (fires when user picks a new theme)
+select.addEventListener('input', function (event) {
+  const value = event.target.value;
+  console.log('color scheme changed to', value);
+
+  // Apply the color-scheme to the root <html> element
+  document.documentElement.style.setProperty('color-scheme', value);
+});
