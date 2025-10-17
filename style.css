@@ -190,4 +190,29 @@ h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
+/* 1) Auto dark mode */
+html {
+  color-scheme: light dark;
+  background: canvas;
+  color: canvastext;
+}
+
+/* 2) Nav border that adapts */
+nav {
+  --border-color: oklch(50% 10% 200 / 40%);
+  border-bottom: 1px solid var(--border-color);
+  /* keep your other nav styles */
+}
+
+/* 3) Hover background that works in both modes */
+nav a:hover {
+  border-bottom: 0.4em solid var(--color-accent);
+  background-color: color-mix(in oklch, var(--color-accent), canvas 85%);
+}
+
+/* 4) Current stays the same */
+nav a.current {
+  /* your existing rule is fine */
+}
+
 
