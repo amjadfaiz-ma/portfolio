@@ -125,7 +125,7 @@ form .form-submit {
   color: var(--color-accent);
   border-radius: 0.35rem;
   cursor: pointer;
-  transition: transform 0.05s ease, background 0.2s ease, color 0.2s ease;
+  transition: transform 0.05s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 form .form-submit:hover {
@@ -209,11 +209,6 @@ nav {
 nav a:hover {
   border-bottom: 0.4em solid var(--color-accent);
   background-color: color-mix(in oklch, var(--color-accent), canvas 85%);
-}
-
-/* 4) Current stays the same */
-nav a.current {
-  /* your existing rule is fine */
 }
 
 /* -----------------------

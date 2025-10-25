@@ -1,13 +1,18 @@
 // Step 1.3: Setting Up the Projects Page
 
-// 1️⃣ Import helper functions from global.js
 import { fetchJSON, renderProjects } from '../global.js';
 
-// 2️⃣ Fetch the project data (make sure ../lib/projects.json exists)
+// Fetch JSON data
 const projects = await fetchJSON('../lib/projects.json');
 
-// 3️⃣ Select the container where projects will appear
+// Select the container
 const projectsContainer = document.querySelector('.projects');
 
-// 4️⃣ Render the projects dynamically
+// Render all projects
 renderProjects(projects, projectsContainer, 'h2');
+
+// Step 1.6: Counting Projects
+const titleElement = document.querySelector('.projects-title');
+if (titleElement) {
+  titleElement.textContent = `Projects (${projects.length})`;
+}
