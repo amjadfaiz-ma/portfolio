@@ -236,3 +236,17 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
   console.log(`Rendered ${projects.length} projects successfully.`);
 }
 
+/* -----------------------------------------
+   Step 3: Fetching GitHub Profile Data
+   ----------------------------------------- */
+
+// Reuse fetchJSON to get data from GitHub’s public API
+export async function fetchGitHubData(username) {
+  try {
+    // Return parsed JSON data from GitHub
+    return await fetchJSON(`https://api.github.com/users/${username}`);
+  } catch (error) {
+    console.error('Error fetching GitHub data:', error);
+  }
+}
+

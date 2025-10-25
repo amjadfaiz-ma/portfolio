@@ -233,4 +233,17 @@ label.color-scheme select {
   padding: 0.25em;
 }
 
+.profile-stats .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .5rem 1rem;
+}
+.profile-stats dt {
+  grid-row: 1;
+  font-weight: 600;
+}
+.profile-stats dd {
+  grid-row: 2;
+  margin: 0;
+}
 
