@@ -3,7 +3,7 @@
 import { fetchJSON, renderProjects } from '../global.js';
 
 // Fetch JSON data
-const projects = await fetchJSON('../lib/projects.json');
+const projects = await fetchJSON('../projects.json');
 
 // Select the container
 const projectsContainer = document.querySelector('.projects');
