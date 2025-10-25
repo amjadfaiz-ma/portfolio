@@ -3,7 +3,7 @@
 import { fetchJSON, renderProjects } from '../global.js';
 
 // Fetch JSON data
-const projects = await fetchJSON('../projects.json');
+const projects = await fetchJSON('../lib/projects.json');
 
 // Select the container
 const projectsContainer = document.querySelector('.projects');
@@ -13,6 +13,7 @@ renderProjects(projects, projectsContainer, 'h2');
 
 // Step 1.6: Counting Projects
 const titleElement = document.querySelector('.projects-title');
-if (titleElement) {
+if (titleElement && Array.isArray(projects)) {
   titleElement.textContent = `Projects (${projects.length})`;
 }
+
