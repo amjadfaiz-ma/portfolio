@@ -160,3 +160,79 @@ form?.addEventListener('submit', (event) => {
   // Open the user’s email client with prefilled fields
   location.href = url;
 });
+
+/* -----------------------------------------
+   Step 1.2: Importing Project Data
+   ----------------------------------------- */
+
+// This function fetches and returns JSON data (e.g., projects.json)
+export async function fetchJSON(url) {
+  try {
+    // Fetch the JSON file from the given URL
+    const response = await fetch(url);
+
+    // Check if the response was successful
+    if (!response.ok) {
+      throw new Error(`Failed to fetch projects: ${response.statusText}`);
+    }
+
+    // Parse and return the JSON data
+    const data = await response.json();
+    console.log('Fetched project data:', data); // Optional: inspect in console
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching or parsing JSON data:', error);
+  }
+}
+
+/* -----------------------------------------
+   Step 1.4: Creating the renderProjects Function
+   ----------------------------------------- */
+
+export function renderProjects(projects, containerElement, headingLevel = 'h2') {
+  // 1️⃣ Validate parameters
+  if (!Array.isArray(projects)) {
+    console.error('renderProjects: expected an array of projects.');
+    return;
+  }
+  if (!(containerElement instanceof HTMLElement)) {
+    console.error('renderProjects: invalid container element.');
+    return;
+  }
+
+  // 2️⃣ Clear existing content to prevent duplicates
+  containerElement.innerHTML = '';
+
+  // 3️⃣ Handle empty or missing data gracefully
+  if (projects.length === 0) {
+    containerElement.textContent = 'No projects available at the moment.';
+    return;
+  }
+
+  // 4️⃣ Validate the heading level (must be h1–h6)
+  const validHeading = /^h[1-6]$/i.test(headingLevel) ? headingLevel : 'h2';
+
+  // 5️⃣ Loop through projects and create <article> for each
+  for (const project of projects) {
+    const article = document.createElement('article');
+
+    // Default fallbacks in case data is missing
+    const title = project.title || 'Untitled Project';
+    const image = project.image || 'https://via.placeholder.com/150';
+    const description = project.description || 'No description available.';
+
+    // 6️⃣ Populate <article> dynamically
+    article.innerHTML = `
+      <${validHeading}>${title}</${validHeading}>
+      <img src="${image}" alt="${title}">
+      <p>${description}</p>
+    `;
+
+    // 7️⃣ Append to container
+    containerElement.appendChild(article);
+  }
+
+  console.log(`Rendered ${projects.length} projects successfully.`);
+}
+
