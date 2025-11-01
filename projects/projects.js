@@ -21,30 +21,48 @@ if (titleElement) {
 }
 
 /* ----------------------------------------
+   Step 3.1: Derive pie data from real projects
+   ---------------------------------------- */
+
+// Group projects by year and count how many per year
+// rolledData becomes something like: [ ['2024', 3], ['2023', 4], ... ]
+let rolledData = d3.rollups(
+  projects,
+  (v) => v.length,   // how many projects in this group
+  (d) => d.year      // group key = project.year
+);
+
+// Convert that into the {value, label} shape our pie code expects
+let data = rolledData.map(([year, count]) => {
+  return { value: count, label: year };
+});
+
+/* ----------------------------------------
    Step 1.4 (refactor): Use d3.pie()
    ---------------------------------------- */
 
-// --- Pie chart + legend setup ---
+/* ----------------------------------------
+   Pie chart + legend using real data
+   ---------------------------------------- */
 
-let data = [
-  { value: 1, label: 'apples' },
-  { value: 2, label: 'oranges' },
-  { value: 3, label: 'mangos' },
-  { value: 4, label: 'pears' },
-  { value: 5, label: 'limes' },
-  { value: 5, label: 'cherries' },
-];
+// 1. We already computed `data` above using d3.rollups()
+//    data = [ { value: count, label: year }, ... ]
 
+// 2. Make the pie slice generator read .value
 let sliceGenerator = d3.pie().value(d => d.value);
+
+// 3. Compute angles for each slice
 let arcData = sliceGenerator(data);
 
+// 4. Build arc path generator
 let arcGenerator = d3.arc()
   .innerRadius(0)
   .outerRadius(50);
 
+// 5. Color scale (same as before)
 let colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-// Draw pie slices
+// 6. Draw each slice into the SVG
 d3.select('#projects-pie-plot')
   .selectAll('path')
   .data(arcData)
@@ -53,7 +71,7 @@ d3.select('#projects-pie-plot')
   .attr('d', d => arcGenerator(d))
   .attr('fill', (_d, idx) => colors(idx));
 
-// Build legend
+// 7. Build legend under .legend
 let legend = d3.select('.legend');
 
 legend.selectAll('li')
