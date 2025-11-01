@@ -85,11 +85,13 @@ function renderPieChart(projectsGiven) {
     .enter()
     .append('path')
     .attr('d', d => arcGenerator(d))
-    .attr('fill', (_d, idx) => colors(idx))
-    .attr('class', (_d, idx) => (
+    .attr('fill', (d, idx) => colors(idx))
+    .attr('class', (d, idx) => (
       idx === selectedIndex ? 'selected' : ''
     ))
-    .on('click', (_event, _d, idx) => {
+    .on('click', (event, d) => {
+      // Get the index from the arc data
+      const idx = arcData.indexOf(d);
       // toggle selection
       selectedIndex = (selectedIndex === idx) ? -1 : idx;
       applyFilteredView();
@@ -101,17 +103,19 @@ function renderPieChart(projectsGiven) {
     .data(data)
     .enter()
     .append('li')
-    .attr('class', (_d, idx) => (
+    .attr('class', (d, idx) => (
       idx === selectedIndex ? 'legend-item selected' : 'legend-item'
     ))
     // inline custom property --color is used by .swatch and also
     // can be overridden by .selected with !important
-    .attr('style', (_d, idx) => `--color:${colors(idx)}`)
+    .attr('style', (d, idx) => `--color:${colors(idx)}`)
     .html(d => `
       <span class="swatch"></span>
       ${d.label} <em>(${d.value})</em>
     `)
-    .on('click', (_event, _d, idx) => {
+    .on('click', (event, d) => {
+      // Get the index from the data array
+      const idx = data.indexOf(d);
       // toggle selection via legend click
       selectedIndex = (selectedIndex === idx) ? -1 : idx;
       applyFilteredView();
@@ -173,7 +177,7 @@ function applyFilteredView() {
   if (titleElement) {
     titleElement.textContent = `Projects (${onlyThatYear.length})`;
   }
-  renderPieChart(onlyThatYear);
+  renderPieChart(afterSearch);
 }
 
 // -----------------------------------------------------
