@@ -24,6 +24,8 @@ if (titleElement) {
    Step 1.4 (refactor): Use d3.pie()
    ---------------------------------------- */
 
+// --- Pie chart + legend setup ---
+
 let data = [
   { value: 1, label: 'apples' },
   { value: 2, label: 'oranges' },
@@ -33,25 +35,16 @@ let data = [
   { value: 5, label: 'cherries' },
 ];
 
-// 1) Make the generator that converts data → slice angle objects
 let sliceGenerator = d3.pie().value(d => d.value);
+let arcData = sliceGenerator(data);
 
-// 2) Get slice angle objects for each entry in data
-let generatedSlices = sliceGenerator(data);
-// generatedSlices is an array like:
-// [ { startAngle: ..., endAngle: ..., value: 1, ...}, { ... } ]
-
-// 3) Same arc generator as before
 let arcGenerator = d3.arc()
   .innerRadius(0)
   .outerRadius(50);
 
-// 4) Convert each slice object into an SVG path string
-let arcs = generatedSlices.map(d => arcGenerator(d));
-
-// 5) Draw them with colors
 let colors = d3.scaleOrdinal(d3.schemeTableau10);
 
+// Draw pie slices
 d3.select('#projects-pie-plot')
   .selectAll('path')
   .data(arcData)
@@ -59,10 +52,6 @@ d3.select('#projects-pie-plot')
   .append('path')
   .attr('d', d => arcGenerator(d))
   .attr('fill', (_d, idx) => colors(idx));
-
-/* ----------------------------------------
-   Legend generation
-   ---------------------------------------- */
 
 // Build legend
 let legend = d3.select('.legend');
