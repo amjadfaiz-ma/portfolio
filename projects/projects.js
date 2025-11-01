@@ -17,7 +17,7 @@ renderProjects(projects, projectsContainer, 'h2');
 const titleElement = document.querySelector('.projects-title');
 if (titleElement) {
   const count = Array.isArray(projects) ? projects.length : 0;
-  titleElement.textContent = `Projects (${count})`;
+  titleElement.textContent = `${count} Projects`;
 }
 
 /* ----------------------------------------
