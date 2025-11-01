@@ -273,6 +273,7 @@ label.color-scheme select {
   overflow: visible;
 }
 
+/* Legend container styling */
 .legend {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
@@ -280,9 +281,14 @@ label.color-scheme select {
   flex: 1;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 1em 1.5em;                /* extra inner spacing */
+  border: 1px solid oklch(85% 3% 200); /* subtle gray border */
+  border-radius: 0.5em;              /* smooth rounded corners */
+  background-color: oklch(98% 2% 200); /* faint background */
+  box-shadow: 0 1px 2px oklch(70% 3% 200 / 0.3); /* gentle shadow */
 }
 
+/* Each legend item */
 .legend-item {
   display: flex;
   align-items: center;
@@ -291,20 +297,16 @@ label.color-scheme select {
   line-height: 1.2;
 }
 
+/* Color swatch circle */
 .legend-item .swatch {
   display: inline-block;
   width: 1em;
   height: 1em;
   background-color: var(--color);
-  border-radius: 0.2em;
-  border: 1px solid oklch(30% 0.02 240 / .3);
+  border-radius: 50%;                 /* make it circular */
+  border: 1px solid oklch(30% 0.02 240 / .2);
 }
 
-.legend-item em {
-  font-style: normal;
-  opacity: 0.7;
-  font-size: 0.8em;
-}
 
 
 
