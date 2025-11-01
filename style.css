@@ -327,16 +327,11 @@ label.color-scheme select {
 /* If a pie slice (<path>) has class="selected", color it using that var */
 #projects-pie-plot path.selected {
   fill: var(--color);
-  outline: 2px solid var(--color);
-  outline-offset: 2px;
-  /* you can also slightly scale if you want */
-  transform: scale(1.05);
 }
 
 /* If a legend <li> has class="selected", reflect that visually too */
 .legend-item.selected {
   background-color: color-mix(in oklch, var(--color) 15%, canvas);
-  border-radius: 0.4rem;
 }
 
 
