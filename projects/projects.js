@@ -14,7 +14,7 @@ let selectedIndex = -1; // no slice selected
 
 // Initial render of cards + title
 renderProjects(projects, projectsContainer, 'h2');
-titleElement.textContent = `Projects (${projects.length})`;
+titleElement.textContent = `${projects.length} Projects`;
 
 // helper: text search across all metadata (unchanged)
 function filterProjectsByQuery(queryRaw) {
