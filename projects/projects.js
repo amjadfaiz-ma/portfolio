@@ -50,7 +50,7 @@ function applyFilteredView() {
   if (!selectedYear) {
     // selection doesn't match what's on screen after search
     renderProjects(afterSearch, projectsContainer, 'h2');
-    titleElement.textContent = `Projects (${afterSearch.length})`;
+    titleElement.textContent = `${afterSearch.length} Projects`;
     renderPieChart(afterSearch);
     return;
   }
@@ -59,7 +59,7 @@ function applyFilteredView() {
   const yearFiltered = afterSearch.filter(p => p.year === selectedYear);
 
   renderProjects(yearFiltered, projectsContainer, 'h2');
-  titleElement.textContent = `Projects (${yearFiltered.length})`;
+  titleElement.textContent = `${yearFiltered.length} Projects`;
   renderPieChart(yearFiltered);
 }
 
