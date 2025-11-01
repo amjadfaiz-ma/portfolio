@@ -329,9 +329,11 @@ label.color-scheme select {
   fill: var(--color);
 }
 
-/* If a legend <li> has class="selected", reflect that visually too */
-.legend-item.selected {
-  background-color: color-mix(in oklch, var(--color) 15%, canvas);
+/* If a legend <li> has class="selected", only change the swatch circle color */
+.legend-item.selected .swatch {
+  /* The swatch already uses var(--color) for its background, 
+     so no additional styling needed - it will automatically 
+     update when --color changes to the selected color */
 }
 
 
