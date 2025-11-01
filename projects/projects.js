@@ -24,10 +24,17 @@ if (titleElement) {
    Step 1.4 (refactor): Use d3.pie()
    ---------------------------------------- */
 
-let data = [1, 2, 3, 4, 5, 5];
+let data = [
+  { value: 1, label: 'apples' },
+  { value: 2, label: 'oranges' },
+  { value: 3, label: 'mangos' },
+  { value: 4, label: 'pears' },
+  { value: 5, label: 'limes' },
+  { value: 5, label: 'cherries' },
+];
 
 // 1) Make the generator that converts data → slice angle objects
-let sliceGenerator = d3.pie();
+let sliceGenerator = d3.pie().value(d => d.value);
 
 // 2) Get slice angle objects for each entry in data
 let generatedSlices = sliceGenerator(data);
@@ -45,9 +52,28 @@ let arcs = generatedSlices.map(d => arcGenerator(d));
 // 5) Draw them with colors
 let colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-arcs.forEach((arc, idx) => {
-  d3.select('#projects-pie-plot')
-    .append('path')
-    .attr('d', arc)
-    .attr('fill', colors[idx]);
-});
+d3.select('#projects-pie-plot')
+  .selectAll('path')
+  .data(arcData)
+  .enter()
+  .append('path')
+  .attr('d', d => arcGenerator(d))
+  .attr('fill', (_d, idx) => colors(idx));
+
+/* ----------------------------------------
+   Legend generation
+   ---------------------------------------- */
+
+// Build legend
+let legend = d3.select('.legend');
+
+legend.selectAll('li')
+  .data(data)
+  .enter()
+  .append('li')
+  .attr('class', 'legend-item')
+  .attr('style', (_d, idx) => `--color:${colors(idx)}`)
+  .html(d => `
+    <span class="swatch"></span>
+    ${d.label} <em>(${d.value})</em>
+  `);

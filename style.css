@@ -253,3 +253,64 @@ label.color-scheme select {
   overflow: visible;
 }
 
+/* --- Pie chart + legend layout --- */
+
+/* The outer wrapper that contains the SVG and the legend */
+.pie-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-block: 2rem;
+  border: 1px solid oklch(80% 3% 200);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: oklch(98% 2% 200);
+}
+
+/* Keep the pie chart SVG sized nicely (same idea as before) */
+#projects-pie-plot {
+  max-width: 20em;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+/* Legend list */
+.legend {
+  /* grid so it can wrap into columns when there's space */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
+  gap: 1rem; /* space between legend items */
+  flex: 1;   /* take remaining horizontal space next to the pie */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Each legend item (li) */
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* smaller than the grid gap above = visual grouping */
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+/* The color swatch square */
+.legend-item .swatch {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: var(--color);
+  border-radius: 0.2em; /* soften corners; use 50% for circle */
+  border: 1px solid oklch(30% 0.02 240 / .3); /* subtle border for contrast */
+}
+
+/* Optional: lighter styling for the "(value)" part */
+.legend-item em {
+  font-style: normal;
+  opacity: 0.7;
+  font-size: 0.8em;
+}
+
+
