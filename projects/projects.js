@@ -1,251 +1,206 @@
 import { fetchJSON, renderProjects } from '../global.js';
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
-/*
- * -----------------------------------------------------
- * 0. Load project data
- * -----------------------------------------------------
- */
+// -----------------------------------------------------
+// 0. Load project data from JSON
+// -----------------------------------------------------
 const jsonURL = new URL('../lib/projects.json', import.meta.url);
-const allProjects = await fetchJSON(jsonURL.href);
+const projects = await fetchJSON(jsonURL.href);
 
-/*
- * -----------------------------------------------------
- * 1. Grab DOM elements
- * -----------------------------------------------------
- */
+// -----------------------------------------------------
+// 1. Grab DOM elements we'll reuse
+// -----------------------------------------------------
 const projectsContainer = document.querySelector('.projects');
 const titleElement = document.querySelector('.projects-title');
 const searchInput = document.querySelector('.searchBar');
-
 const pieSVG = d3.select('#projects-pie-plot');
 const legendUL = d3.select('.legend');
 
-/*
- * -----------------------------------------------------
- * 2. State
- * -----------------------------------------------------
- *
- * selectedIndex = which slice is active in the pie (-1 = none)
- * This must live OUTSIDE any render function so it persists.
- */
+// -----------------------------------------------------
+// 2. State
+// -----------------------------------------------------
+
+// Which pie slice is currently selected? (-1 = none)
 let selectedIndex = -1;
 
-/*
- * -----------------------------------------------------
- * 3. Text search helper (Step 4.3)
- * -----------------------------------------------------
- * Filter projects by whatever's typed in the search bar.
- * Case-insensitive, searches across ALL fields in the project object.
- */
+// -----------------------------------------------------
+// 3. Helper: filter by search text across ALL metadata
+// -----------------------------------------------------
+// We search all values of the project object (title, description, year, etc.)
+// and compare case-insensitively.
 function filterProjectsByQuery(queryRaw) {
   const q = queryRaw.trim().toLowerCase();
-  if (!q) return allProjects;
+  if (!q) {
+    // no search text, return everything
+    return projects;
+  }
 
-  return allProjects.filter((project) => {
+  return projects.filter((project) => {
     const values = Object.values(project).join('\n').toLowerCase();
     return values.includes(q);
   });
 }
 
-/*
- * -----------------------------------------------------
- * 4. Pie + legend renderer (Steps 1–2–5.2)
- * -----------------------------------------------------
- *
- * This draws:
- *  - the pie wedges (<path> in the SVG)
- *  - the legend (<li> in the UL)
- *
- * IMPORTANT:
- * - projectsForPie is the BASESET for the pie. This should be the
- *   *search-filtered* set, not the year-filtered set.
- *   So the pie always shows all (matching the search),
- *   even if you're currently filtering to one specific year.
- *
- * - selectedIndex is used to add the "selected" class to
- *   the correct wedge + legend item.
- *
- * - click handlers update selectedIndex and then call applyFilteredView()
- *   to re-render the visible projects list below.
- */
-function renderPieChart(projectsForPie) {
-  // A. roll up counts per year
+// -----------------------------------------------------
+// 4. Core renderer for the pie chart + legend
+//    This draws wedges, colors them, wires up click handlers,
+//    and applies highlight state (selectedIndex).
+// -----------------------------------------------------
+function renderPieChart(projectsGiven) {
+  // A. Roll up counts of projects per year
   // rolledData looks like: [ ['2024', 3], ['2023', 4], ... ]
   const rolledData = d3.rollups(
-    projectsForPie,
+    projectsGiven,
     (v) => v.length,
-    (d) => d.year,
+    (d) => d.year
   );
 
-  // B. convert into objects the pie() expects
-  // [{ label: '2024', value: 3 }, ...]
+  // B. Convert rolledData to array of objects that pie() expects
+  //    { label: '2024', value: 3 }
   const data = rolledData.map(([year, count]) => ({
     label: year,
     value: count,
   }));
 
-  // C. setup pie and arc generators
+  // C. Pie slice generator (computes start/end angles)
   const sliceGenerator = d3.pie().value(d => d.value);
+
+  // D. Arc path generator (builds the actual wedge path 'd' string)
   const arcData = sliceGenerator(data);
-
   const arcGenerator = d3.arc()
-    .innerRadius(0)
-    .outerRadius(50);
+    .innerRadius(0)   // 0 = full pie; >0 would make a donut
+    .outerRadius(50); // matches our SVG viewBox radius
 
-  // D. color scale
+  // E. Color scale for slices/legend
   const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-  // E. clear previous wedges + legend entries
+  // F. Clear old SVG + legend before drawing fresh
   pieSVG.selectAll('*').remove();
   legendUL.selectAll('*').remove();
 
-  // F. draw wedges
+  // G. Draw pie slices
   const paths = pieSVG
     .selectAll('path')
     .data(arcData)
     .enter()
     .append('path')
     .attr('d', d => arcGenerator(d))
-    .attr('fill', (_d, idx) => colors(idx))
-    // if this slice is the selected one, give it the .selected class
-    .attr('class', (_d, idx) => (
+    .attr('fill', (d, idx) => colors(idx))
+    .attr('class', (d, idx) => (
       idx === selectedIndex ? 'selected' : ''
     ))
-    .on('click', (_event, _d, idx) => {
-      // toggle selection:
-      // if you click the same slice, deselect (-1), else select new index
+    .on('click', (event, d) => {
+      // Get the index from the arc data
+      const idx = arcData.indexOf(d);
+      // toggle selection
       selectedIndex = (selectedIndex === idx) ? -1 : idx;
-      applyFilteredView(); // <- re-render the bottom list + refresh chart highlight
+      applyFilteredView();
     });
 
-  // G. draw legend items
+  // H. Draw legend entries
   const legendItems = legendUL
     .selectAll('li')
     .data(data)
     .enter()
     .append('li')
-    .attr('class', (_d, idx) => (
+    .attr('class', (d, idx) => (
       idx === selectedIndex ? 'legend-item selected' : 'legend-item'
     ))
-    // expose a --color custom prop for the swatch and for .selected overrides
-    .attr('style', (_d, idx) => `--color:${colors(idx)}`)
+    // inline custom property --color is used by .swatch and also
+    // can be overridden by .selected with !important
+    .attr('style', (d, idx) => `--color:${colors(idx)}`)
     .html(d => `
       <span class="swatch"></span>
       ${d.label} <em>(${d.value})</em>
     `)
-    .on('click', (_event, _d, idx) => {
+    .on('click', (event, d) => {
+      // Get the index from the data array
+      const idx = data.indexOf(d);
+      // toggle selection via legend click
       selectedIndex = (selectedIndex === idx) ? -1 : idx;
       applyFilteredView();
     });
 
-  // H. pointer cursor on interactive elements
+  // I. (Optional) cursor affordance
   paths.style('cursor', 'pointer');
   legendItems.style('cursor', 'pointer');
 }
 
-/*
- * -----------------------------------------------------
- * 5. The brain: applyFilteredView (Steps 4.4 + 5.2 + 5.3)
- * -----------------------------------------------------
- *
- * This decides:
- * - Which projects are currently visible in the grid
- * - What the <h1> count text is
- * - How the pie/legend should look
- *
- * Logic:
- *   1. Start with search filter only -> afterSearch
- *   2. Draw the pie/legend using afterSearch (NOT year filtered!)
- *   3. If no slice selected (selectedIndex === -1):
- *        show all of afterSearch in the grid.
- *      Else:
- *        figure out which year that slice index corresponds to,
- *        filter afterSearch to that year, and render only that subset.
- */
+// -----------------------------------------------------
+// 5. Main reactive controller
+//    This function decides what should be visible right now,
+//    based on BOTH search query and the selected pie slice.
+// -----------------------------------------------------
 function applyFilteredView() {
-  // 1. search filter
-  const currentQuery = searchInput ? searchInput.value || '' : '';
+  // Step 1: apply text search
+  const currentQuery = searchInput ? (searchInput.value || '') : '';
   const afterSearch = filterProjectsByQuery(currentQuery);
 
-  // 2. ALWAYS redraw the pie chart based on afterSearch,
-  //    so the pie shows all search-matching years,
-  //    not just the currently selected one.
-  //    Because renderPieChart() uses selectedIndex
-  //    when deciding which wedge to .selected,
-  //    the highlight will stay in sync.
-  renderPieChart(afterSearch);
-
-  // 3. If nothing is selected in the pie, just render everything from afterSearch
+  // Step 2: if nothing is selected in the pie, show full search results
   if (selectedIndex === -1) {
     renderProjects(afterSearch, projectsContainer, 'h2');
     if (titleElement) {
       titleElement.textContent = `Projects (${afterSearch.length})`;
     }
+    renderPieChart(afterSearch);
     return;
   }
 
-  // 4. If a slice IS selected:
-  //    map selectedIndex -> which year label that slice represents.
-  //    We must recompute the same rolledData we used in renderPieChart(),
-  //    and in the same order, so indices line up.
+  // Step 3: if a slice is selected, we only want projects for that slice's year.
+  // We need to map selectedIndex -> which year label that slice represents.
+  // We do this by rolling up afterSearch with the same logic used in renderPieChart.
   const rolledData = d3.rollups(
     afterSearch,
     (v) => v.length,
-    (d) => d.year,
+    (d) => d.year
   );
-  // rolledData is like [ ['2024', 3], ['2023', 4], ... ]
+  // rolledData is in the same order D3 pie() will consume it:
+  // e.g. [ ['2024', 3], ['2023', 4], ... ]
+
   const selectedYear = rolledData[selectedIndex]?.[0];
 
-  // If selectedIndex points to something that doesn't exist anymore
-  // (e.g. you typed in a search that removed that year),
-  // fall back to showing everything afterSearch.
+  // If there's no corresponding year (for example, you typed a search
+  // that removed that year from the page), fall back to afterSearch.
   if (!selectedYear) {
     renderProjects(afterSearch, projectsContainer, 'h2');
     if (titleElement) {
       titleElement.textContent = `Projects (${afterSearch.length})`;
     }
+    renderPieChart(afterSearch);
     return;
   }
 
-  // 5. Actually filter the visible project cards by that year
+  // Step 4: filter to ONLY that year
   const onlyThatYear = afterSearch.filter(p => p.year === selectedYear);
 
   renderProjects(onlyThatYear, projectsContainer, 'h2');
   if (titleElement) {
     titleElement.textContent = `Projects (${onlyThatYear.length})`;
   }
+  renderPieChart(afterSearch);
 }
 
-/*
- * -----------------------------------------------------
- * 6. Search bar live updates (Step 4.4 behavior)
- * -----------------------------------------------------
- * Any time the query changes, recompute the full view.
- */
+// -----------------------------------------------------
+// 6. Wire up live search
+//    Whenever the user types, we recompute the view.
+// -----------------------------------------------------
 if (searchInput) {
   searchInput.addEventListener('input', () => {
     applyFilteredView();
   });
 }
 
-/*
- * -----------------------------------------------------
- * 7. Initial page load
- * -----------------------------------------------------
- * Show all projects and draw the initial pie.
- * We do this by:
- *  - rendering cards once,
- *  - setting the heading,
- *  - calling applyFilteredView() to sync everything else.
- */
+// -----------------------------------------------------
+// 7. Initial page load
+//    - Render all projects in the grid
+//    - Set the title count
+//    - Draw the initial pie + legend
+// -----------------------------------------------------
+renderProjects(projects, projectsContainer, 'h2');
 
-// Initial "full list" render for projects section
-renderProjects(allProjects, projectsContainer, 'h2');
 if (titleElement) {
-  titleElement.textContent = `Projects (${allProjects.length})`;
+  titleElement.textContent = `Projects (${projects.length})`;
 }
 
-// Now run the unified render once to draw the pie/legend
-// and ensure selectedIndex syncing is respected
-applyFilteredView();
+// Draw the initial pie/legend for all projects
+renderPieChart(projects);
