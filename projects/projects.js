@@ -67,24 +67,28 @@ function drawPieChart(projectData) {
 drawPieChart(projects);
 
 /* ----------------------------------------
-   Step 4: Search functionality
+   Step 4.3: Improved Search
    ---------------------------------------- */
 let query = '';
 
 const searchInput = document.querySelector('.searchBar');
+
 searchInput.addEventListener('input', (event) => {
-  // update query
+  // 1️⃣ Update the query string
   query = event.target.value.trim().toLowerCase();
 
-  // filter projects by title match
-  const filteredProjects = projects.filter((p) =>
-    p.title.toLowerCase().includes(query)
-  );
+  // 2️⃣ Filter projects across *all* fields (case-insensitive)
+  const filteredProjects = projects.filter((project) => {
+    // Combine all values (title, description, year, etc.)
+    const values = Object.values(project).join('\n').toLowerCase();
+    return values.includes(query);
+  });
 
-  // re-render project cards + title
+  // 3️⃣ Re-render project cards and title
   renderProjects(filteredProjects, projectsContainer, 'h2');
   titleElement.textContent = `Projects (${filteredProjects.length})`;
 
-  // re-draw pie chart for filtered projects
+  // 4️⃣ Re-render pie chart + legend for visible projects
   drawPieChart(filteredProjects);
 });
+
