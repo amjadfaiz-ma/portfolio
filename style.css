@@ -322,10 +322,6 @@ label.color-scheme select {
   opacity: 0.5;
 }
 
-/* Optional: slightly enlarge the hovered wedge */
-#projects-pie-plot path:hover {
-  transform: scale(1.03);
-}
 
 
 
