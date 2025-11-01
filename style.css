@@ -308,6 +308,40 @@ label.color-scheme select {
 }
 
 /* ----------------------------
+   Step 5.2 – Selected state
+   ---------------------------- */
+
+/* default interactive affordance (if you didn't set this inline in JS) */
+#projects-pie-plot path {
+  cursor: pointer;
+}
+
+/* highlight color for selected year.
+   We override --color for legend swatches by using !important.
+   We ALSO force the pie slice fill for the selected <path>.
+*/
+.selected {
+  --color: oklch(60% 45% 0) !important; /* pick something distinct */
+}
+
+/* If a pie slice (<path>) has class="selected", color it using that var */
+#projects-pie-plot path.selected {
+  fill: var(--color);
+  outline: 2px solid var(--color);
+  outline-offset: 2px;
+  /* you can also slightly scale if you want */
+  transform: scale(1.05);
+}
+
+/* If a legend <li> has class="selected", reflect that visually too */
+.legend-item.selected {
+  background-color: color-mix(in oklch, var(--color) 15%, canvas);
+  border-radius: 0.4rem;
+  box-shadow: 0 0 0 2px var(--color);
+}
+
+
+/* ----------------------------
    Step 5.1 – Hover highlight
    ---------------------------- */
 
@@ -320,6 +354,14 @@ label.color-scheme select {
 /* When any path is hovered, fade the non-hovered ones */
 #projects-pie-plot:has(path:hover) path:not(:hover) {
   opacity: 0.5;
+}
+
+.selected {
+  --color: oklch(60% 45% 0) !important;
+
+  &:is(path) {
+    fill: var(--color);
+  }
 }
 
 
