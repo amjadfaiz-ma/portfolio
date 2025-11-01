@@ -21,22 +21,33 @@ if (titleElement) {
 }
 
 /* ----------------------------------------
-   Step 1.3: Draw a full circle with D3
+   Step 1.4 (refactor): Use d3.pie()
    ---------------------------------------- */
 
-// 1️⃣ Create an arc generator
+let data = [1, 2];
+
+// 1) Make the generator that converts data → slice angle objects
+let sliceGenerator = d3.pie();
+
+// 2) Get slice angle objects for each entry in data
+let generatedSlices = sliceGenerator(data);
+// generatedSlices is an array like:
+// [ { startAngle: ..., endAngle: ..., value: 1, ...}, { ... } ]
+
+// 3) Same arc generator as before
 let arcGenerator = d3.arc()
   .innerRadius(0)
   .outerRadius(50);
 
-// 2️⃣ Generate an arc path (full circle)
-let arc = arcGenerator({
-  startAngle: 0,
-  endAngle: 2 * Math.PI,
-});
+// 4) Convert each slice object into an SVG path string
+let arcs = generatedSlices.map(d => arcGenerator(d));
 
-// 3️⃣ Append the arc to the SVG
-d3.select('#projects-pie-plot')
-  .append('path')
-  .attr('d', arc)
-  .attr('fill', 'red');
+// 5) Draw them with colors
+let colors = ['gold', 'purple'];
+
+arcs.forEach((arc, idx) => {
+  d3.select('#projects-pie-plot')
+    .append('path')
+    .attr('d', arc)
+    .attr('fill', colors[idx]);
+});
