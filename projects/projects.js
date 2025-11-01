@@ -24,7 +24,7 @@ if (titleElement) {
    Step 1.4 (refactor): Use d3.pie()
    ---------------------------------------- */
 
-let data = [1, 2];
+let data = [1, 2, 3, 4, 5, 5];
 
 // 1) Make the generator that converts data → slice angle objects
 let sliceGenerator = d3.pie();
@@ -43,7 +43,7 @@ let arcGenerator = d3.arc()
 let arcs = generatedSlices.map(d => arcGenerator(d));
 
 // 5) Draw them with colors
-let colors = ['gold', 'purple'];
+let colors = d3.scaleOrdinal(d3.schemeTableau10);
 
 arcs.forEach((arc, idx) => {
   d3.select('#projects-pie-plot')
