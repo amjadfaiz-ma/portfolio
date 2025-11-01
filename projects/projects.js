@@ -1,4 +1,6 @@
+import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 import { fetchJSON, renderProjects } from '../global.js';
+
 
 // Resolve the JSON path relative to this module (projects.js)
 const jsonURL = new URL('../lib/projects.json', import.meta.url);
