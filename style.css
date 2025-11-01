@@ -307,6 +307,25 @@ label.color-scheme select {
   border: 1px solid oklch(30% 0.02 240 / .2);
 }
 
+/* ----------------------------
+   Step 5.1 – Hover highlight
+   ---------------------------- */
+
+/* Animate opacity changes smoothly */
+#projects-pie-plot path {
+  transition: opacity 300ms ease, transform 300ms ease;
+  cursor: pointer;           /* show pointer for interactivity */
+}
+
+/* When any path is hovered, fade the non-hovered ones */
+#projects-pie-plot:has(path:hover) path:not(:hover) {
+  opacity: 0.5;
+}
+
+/* Optional: slightly enlarge the hovered wedge */
+#projects-pie-plot path:hover {
+  transform: scale(1.03);
+}
 
 
 
