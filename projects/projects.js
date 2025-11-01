@@ -34,7 +34,7 @@ function applyFilteredView() {
   if (selectedIndex === -1) {
     // no wedge selected → just show search results
     renderProjects(afterSearch, projectsContainer, 'h2');
-    titleElement.textContent = `Projects (${afterSearch.length})`;
+    titleElement.textContent = `${afterSearch.length} Projects`;
     renderPieChart(afterSearch);
     return;
   }
