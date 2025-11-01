@@ -226,7 +226,10 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
     article.innerHTML = `
       <${validHeading}>${title}</${validHeading}>
       <img src="${image}" alt="${title}">
-      <p>${description}</p>
+      <div class="project-text">
+        <p>${description}</p>
+        ${project.year ? `<p class="project-year">${project.year}</p>` : ""}
+      </div>
     `;
 
     // 7️⃣ Append to container
