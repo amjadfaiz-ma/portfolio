@@ -19,3 +19,24 @@ if (titleElement) {
   const count = Array.isArray(projects) ? projects.length : 0;
   titleElement.textContent = `Projects (${count})`;
 }
+
+/* ----------------------------------------
+   Step 1.3: Draw a full circle with D3
+   ---------------------------------------- */
+
+// 1️⃣ Create an arc generator
+let arcGenerator = d3.arc()
+  .innerRadius(0)
+  .outerRadius(50);
+
+// 2️⃣ Generate an arc path (full circle)
+let arc = arcGenerator({
+  startAngle: 0,
+  endAngle: 2 * Math.PI,
+});
+
+// 3️⃣ Append the arc to the SVG
+d3.select('#projects-pie-plot')
+  .append('path')
+  .attr('d', arc)
+  .attr('fill', 'red');
