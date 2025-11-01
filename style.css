@@ -329,14 +329,6 @@ label.color-scheme select {
   fill: var(--color);
 }
 
-/* If a legend <li> has class="selected", only change the swatch circle color */
-.legend-item.selected .swatch {
-  /* The swatch already uses var(--color) for its background, 
-     so no additional styling needed - it will automatically 
-     update when --color changes to the selected color */
-}
-
-
 /* ----------------------------
    Step 5.1 – Hover highlight
    ---------------------------- */
