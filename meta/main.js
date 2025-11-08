@@ -160,26 +160,29 @@ function renderScatterPlot(data, commits) {
     .attr('transform', `translate(${usableArea.left}, 0)`)
     .call(yAxis);
 
+
+  const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
+  
   // Dots
   const dots = svg.append('g').attr('class', 'dots');
 
   dots
     .selectAll('circle')
-    .data(commits)
+    .data(sortedCommits)              // <-- use sortedCommits here
     .join('circle')
     .attr('cx', (d) => xScale(d.datetime))
     .attr('cy', (d) => yScale(d.hourFrac))
-    .attr('r', (d) => rScale(d.totalLines))  // radius from lines edited
+    .attr('r', (d) => rScale(d.totalLines))
     .attr('fill', 'steelblue')
-    .style('fill-opacity', 0.7)              // semi-transparent by default
+    .style('fill-opacity', 0.7)
     .on('mouseenter', (event, commit) => {
-      d3.select(event.currentTarget).style('fill-opacity', 1); // highlight
+      d3.select(event.currentTarget).style('fill-opacity', 1);
       renderTooltipContent(commit);
       updateTooltipVisibility(true);
       updateTooltipPosition(event);
     })
     .on('mousemove', (event) => {
-      updateTooltipPosition(event);          // keep tooltip following cursor
+      updateTooltipPosition(event);
     })
     .on('mouseleave', (event) => {
       d3.select(event.currentTarget).style('fill-opacity', 0.7);
