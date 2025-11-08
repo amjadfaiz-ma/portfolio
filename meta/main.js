@@ -51,55 +51,52 @@ function processCommits(data) {
 }
 
 function renderCommitInfo(data, commits) {
-  // Create the <dl> element inside #stats
-  const dl = d3.select('#stats').append('dl').attr('class', 'stats');
+  const container = d3.select('#stats');
 
-  // --- Required stats from the instructions ---
+  // Heading
+  container.append('h2').text('Summary');
 
-  // Total LOC (one row per line in loc.csv)
-  dl.append('dt').html('Total <abbr title="Lines of code">LOC</abbr>');
-  dl.append('dd').text(data.length);
+  // Definition list for stats
+  const dl = container.append('dl').attr('class', 'stats');
 
-  // Total commits
-  dl.append('dt').text('Total commits');
-  dl.append('dd').text(commits.length);
+  // Helper to add one stat
+  const addStat = (label, value) => {
+    dl.append('dt').text(label);
+    dl.append('dd').text(value);
+  };
 
-  // --- Extra stats (pick 3–4) ---
+  // --- derived values ---
 
-  // 1) Number of files in the codebase
+  // # of files
   const numFiles = d3.group(data, (d) => d.file).size;
-  dl.append('dt').text('Files');
-  dl.append('dd').text(numFiles);
 
-  // Compute per-file lengths first (max line number per file)
+  // max depth over all lines
+  const maxDepth = d3.max(data, (d) => d.depth);
+
+  // longest line length in characters
+  const longestLineLen = d3.max(data, (d) => d.length);
+
+  // max lines in any single file (largest line number)
   const fileLengths = d3.rollups(
     data,
     (v) => d3.max(v, (d) => d.line),
     (d) => d.file
   );
+  const maxLines = d3.max(fileLengths, (d) => d[1]);
 
-  // 2) Longest file (name + length)
-  const [longestFileName, longestFileLen] =
-    d3.greatest(fileLengths, (d) => d[1]);
-  dl.append('dt').text('Longest file');
-  dl.append('dd').text(`${longestFileName} (${longestFileLen} lines)`);
+  // --- add stats in the order of the screenshot ---
 
-  // 3) Average file length (in lines)
-  const avgFileLength = d3.mean(fileLengths, (d) => d[1]);
-  dl.append('dt').text('Average file length');
-  dl.append('dd').text(`${avgFileLength.toFixed(1)} lines`);
-
-  // 4) Time of day that most work is done
-  const workByPeriod = d3.rollups(
-    data,
-    (v) => v.length,
-    (d) => d.datetime.toLocaleString('en', { dayPeriod: 'short' })
-    // usually "morning", "afternoon", "evening", "night"
-  );
-  const mostActivePeriod = d3.greatest(workByPeriod, (d) => d[1])?.[0];
-
-  if (mostActivePeriod) {
-    dl.append('dt').text('Most active time of day');
-    dl.append('dd').text(mostActivePeriod);
-  }
+  addStat('COMMITS', commits.length);
+  addStat('FILES', numFiles);
+  addStat('TOTAL LOC', data.length);
+  addStat('MAX DEPTH', maxDepth);
+  addStat('LONGEST LINE', longestLineLen);
+  addStat('MAX LINES', maxLines);
 }
+
+// at the bottom of main.js
+const data = await loadData();
+const commits = processCommits(data);
+
+renderCommitInfo(data, commits);
+

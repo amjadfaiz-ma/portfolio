@@ -354,17 +354,23 @@ label.color-scheme select {
 
 .stats {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.25rem 0.75rem;
-  margin: 1.5rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  column-gap: 3rem;
+  row-gap: 0.25rem;
+  margin-top: 1rem;
 }
 
 .stats dt {
-  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7280; /* soft gray */
 }
 
 .stats dd {
   margin: 0;
+  font-size: 2rem;
+  font-weight: 500;
 }
 
 
