@@ -1,5 +1,7 @@
+// meta/main.js
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
+// Step 1.1: load and clean the CSV
 async function loadData() {
   const data = await d3.csv('loc.csv', (row) => ({
     ...row,
@@ -13,21 +15,42 @@ async function loadData() {
   return data;
 }
 
+// Step 1.2: compute commit-level data
+function processCommits(data) {
+  return d3
+    .groups(data, (d) => d.commit)
+    .map(([commit, lines]) => {
+      const first = lines[0];
+      const { author, date, time, timezone, datetime } = first;
+
+      const ret = {
+        id: commit,
+        // you can change this URL to your own repo if needed
+        url: 'https://github.com/vis-society/lab-7/commit/' + commit,
+        author,
+        date,
+        time,
+        timezone,
+        datetime,
+        // hour of day as a decimal, e.g. 14.5 = 2:30pm
+        hourFrac: datetime.getHours() + datetime.getMinutes() / 60,
+        // how many lines this commit modified
+        totalLines: lines.length,
+      };
+
+      // attach the original line objects without cluttering the console
+      Object.defineProperty(ret, 'lines', {
+        value: lines,
+        writable: false,
+        configurable: false,
+        enumerable: false, // <- hidden in for…in / Object.keys, but visible when expanded
+      });
+
+      return ret;
+    });
+}
+
+// run it
 const data = await loadData();
-
-// Example visualization: number of lines per file type
-const summary = d3.rollups(
-  data,
-  (v) => d3.sum(v, (d) => d.length),
-  (d) => d.type
-);
-
-const container = d3.select('#stats');
-container.append('h2').text('Lines of Code by File Type');
-
-const ul = container.append('ul');
-ul.selectAll('li')
-  .data(summary)
-  .enter()
-  .append('li')
-  .text(([type, total]) => `${type}: ${total} lines`);
+const commits = processCommits(data);
+console.log(commits); // you can remove this once you’ve checked it
