@@ -1,6 +1,9 @@
 // meta/main.js
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
+let xScale;
+let yScale;
+
 // Step 1.1: load and clean the CSV
 async function loadData() {
   const data = await d3.csv('loc.csv', (row) => ({
@@ -105,6 +108,43 @@ function isCommitSelected(selection, commit) {
   const y = yScale(commit.hourFrac);
 
   return x >= x0 && x <= x1 && y >= y0 && y <= y1;
+}
+
+// Step 5.6: language breakdown for selected commits
+function renderLanguageBreakdown(selection) {
+  const selectedCommits = selection
+    ? commits.filter((d) => isCommitSelected(selection, d))
+    : [];
+
+  const container = document.getElementById('language-breakdown');
+
+  if (selectedCommits.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const requiredCommits = selectedCommits.length ? selectedCommits : commits;
+  const lines = requiredCommits.flatMap((d) => d.lines);
+
+  // Use d3.rollup to count lines per language
+  const breakdown = d3.rollup(
+    lines,
+    (v) => v.length,
+    (d) => d.type
+  );
+
+  // Update DOM with breakdown
+  container.innerHTML = '';
+
+  for (const [language, count] of breakdown) {
+    const proportion = count / lines.length;
+    const formatted = d3.format('.1~%')(proportion);
+
+    container.innerHTML += `
+      <dt>${language}</dt>
+      <dd>${count} lines (${formatted})</dd>
+    `;
+  }
 }
 
 function brushed(event) {
