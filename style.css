@@ -359,7 +359,7 @@ label.color-scheme select {
   grid-auto-flow: column;
   grid-auto-columns: minmax(8rem, 1fr);
 
-  column-gap: 3rem;
+  column-gap: 2rem;
   row-gap: 0.25rem;
   margin-top: 1rem;
 }
