@@ -382,6 +382,16 @@ label.color-scheme select {
   text-align: left; /* or right if you want them aligned on the right */
 }
 
+/* Light gridlines for the scatterplot */
+.gridlines line {
+  stroke: oklch(80% 3% 200); /* faint gray-blue */
+  stroke-opacity: 0.5;
+  shape-rendering: crispEdges;
+}
+
+.gridlines path {
+  stroke-width: 0;
+}
 
 
 
