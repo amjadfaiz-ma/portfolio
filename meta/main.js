@@ -161,10 +161,49 @@ function renderScatterPlot(data, commits) {
     .attr('cx', (d) => xScale(d.datetime))
     .attr('cy', (d) => yScale(d.hourFrac))
     .attr('r', 5)
-    .attr('fill', 'steelblue');
+    .attr('fill', 'steelblue')
+    .on('mouseenter', (event, commit) => {
+      renderTooltipContent(commit);
+    })
+    .on('mouseleave', () => {
+      // For now we keep the last commit visible (static tooltip).
+      // If you want to clear it later, you can call:
+      // renderTooltipContent({});
+    });
+
 }
 
+function renderTooltipContent(commit = {}) {
+  // Grab DOM elements once per call
+  const link = document.getElementById('commit-link');
+  const date = document.getElementById('commit-date');
+  const time = document.getElementById('commit-time');
+  const author = document.getElementById('commit-author');
+  const lines = document.getElementById('commit-lines');
 
+  // If commit is empty or undefined, do nothing
+  if (!commit || Object.keys(commit).length === 0) return;
+
+  // Link + commit id
+  link.href = commit.url;
+  link.textContent = commit.id;
+
+  // Full date
+  date.textContent = commit.datetime?.toLocaleString('en', {
+    dateStyle: 'full',
+  });
+
+  // Time
+  time.textContent = commit.datetime?.toLocaleTimeString('en', {
+    timeStyle: 'short',
+  });
+
+  // Author
+  author.textContent = commit.author ?? '';
+
+  // Lines edited (we stored the full list on commit.lines)
+  lines.textContent = commit.lines ? commit.lines.length : commit.totalLines;
+}
 
 
 const data = await loadData();

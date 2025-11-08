@@ -393,5 +393,50 @@ label.color-scheme select {
   stroke-width: 0;
 }
 
+/* --- Commit tooltip layout --- */
+
+/* Generic info dl: 2-column definition list */
+dl.info {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: oklch(98% 0.02 240);
+  border: 1px solid oklch(85% 0.03 240);
+}
+
+dl.info dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7280;
+}
+
+dl.info dd {
+  margin: 0;
+}
+
+/* Tooltip positioning (can be reused elsewhere) */
+.tooltip {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  box-shadow: 0 4px 12px oklch(60% 0.03 240 / 0.3);
+  z-index: 10;
+}
+
+/* --- Dot hover animation --- */
+
+circle {
+  transition: 200ms;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+circle:hover {
+  transform: scale(1.5);
+}
 
 
