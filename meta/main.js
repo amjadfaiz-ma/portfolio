@@ -164,13 +164,30 @@ function renderScatterPlot(data, commits) {
     .attr('fill', 'steelblue')
     .on('mouseenter', (event, commit) => {
       renderTooltipContent(commit);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
+    })
+    .on('mousemove', (event) => {
+      // keep tooltip following the cursor while within the circle
+      updateTooltipPosition(event);
     })
     .on('mouseleave', () => {
-      // For now we keep the last commit visible (static tooltip).
-      // If you want to clear it later, you can call:
-      // renderTooltipContent({});
+      updateTooltipVisibility(false);
     });
 
+}
+
+function updateTooltipVisibility(isVisible) {
+  const tooltip = document.getElementById('commit-tooltip');
+  tooltip.hidden = !isVisible;
+}
+
+function updateTooltipPosition(event) {
+  const tooltip = document.getElementById('commit-tooltip');
+
+  const offset = 12; // small offset so cursor isn't on top of tooltip
+  tooltip.style.left = `${event.clientX + offset}px`;
+  tooltip.style.top = `${event.clientY + offset}px`;
 }
 
 function renderTooltipContent(commit = {}) {
