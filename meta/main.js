@@ -94,6 +94,37 @@ function renderCommitInfo(data, commits) {
   addStat('MAX LINES', maxLines);
 }
 
+function isCommitSelected(selection, commit) {
+  if (!selection) return false;
+
+  // selection is [[x0,y0], [x1,y1]]
+  const [x0, x1] = selection.map((d) => d[0]);
+  const [y0, y1] = selection.map((d) => d[1]);
+
+  const x = xScale(commit.datetime);
+  const y = yScale(commit.hourFrac);
+
+  return x >= x0 && x <= x1 && y >= y0 && y <= y1;
+}
+
+function brushed(event) {
+  const selection = event.selection;
+
+  d3.selectAll('.dots circle').classed('selected', (d) =>
+    isCommitSelected(selection, d)
+  );
+}
+
+function createBrushSelector(svg) {
+  const brush = d3.brush().on('start brush end', brushed);
+
+  // Create brush on the whole SVG
+  svg.call(brush);
+
+  // Make sure overlay is behind dots so tooltips still work
+  svg.selectAll('.dots, .overlay ~ *').raise();
+}
+
 function renderScatterPlot(data, commits) {
   const width = 1000;
   const height = 600;
@@ -162,7 +193,7 @@ function renderScatterPlot(data, commits) {
 
 
   const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
-  
+
   // Dots
   const dots = svg.append('g').attr('class', 'dots');
 
