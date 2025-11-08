@@ -125,6 +125,15 @@ function renderScatterPlot(data, commits) {
     .domain([0, 24])
     .range([usableArea.bottom, usableArea.top]);
 
+  // Lines-per-commit range for dot sizes
+  const [minLines, maxLines] = d3.extent(commits, (d) => d.totalLines);
+
+  // Radius scale – sqrt so area ∝ lines edited
+  const rScale = d3
+    .scaleSqrt()               // Step 4.2: use square-root scale
+    .domain([minLines, maxLines])
+    .range([2, 30]);           // tweak if dots feel too small/large
+
   // 🟢 Add gridlines BEFORE axes
   const gridlines = svg
     .append('g')
@@ -160,21 +169,22 @@ function renderScatterPlot(data, commits) {
     .join('circle')
     .attr('cx', (d) => xScale(d.datetime))
     .attr('cy', (d) => yScale(d.hourFrac))
-    .attr('r', 5)
+    .attr('r', (d) => rScale(d.totalLines))  // radius from lines edited
     .attr('fill', 'steelblue')
+    .style('fill-opacity', 0.7)              // semi-transparent by default
     .on('mouseenter', (event, commit) => {
+      d3.select(event.currentTarget).style('fill-opacity', 1); // highlight
       renderTooltipContent(commit);
       updateTooltipVisibility(true);
       updateTooltipPosition(event);
     })
     .on('mousemove', (event) => {
-      // keep tooltip following the cursor while within the circle
-      updateTooltipPosition(event);
+      updateTooltipPosition(event);          // keep tooltip following cursor
     })
-    .on('mouseleave', () => {
+    .on('mouseleave', (event) => {
+      d3.select(event.currentTarget).style('fill-opacity', 0.7);
       updateTooltipVisibility(false);
     });
-
 }
 
 function updateTooltipVisibility(isVisible) {
