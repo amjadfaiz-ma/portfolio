@@ -50,7 +50,56 @@ function processCommits(data) {
     });
 }
 
-// run it
-const data = await loadData();
-const commits = processCommits(data);
-console.log(commits); // you can remove this once you’ve checked it
+function renderCommitInfo(data, commits) {
+  // Create the <dl> element inside #stats
+  const dl = d3.select('#stats').append('dl').attr('class', 'stats');
+
+  // --- Required stats from the instructions ---
+
+  // Total LOC (one row per line in loc.csv)
+  dl.append('dt').html('Total <abbr title="Lines of code">LOC</abbr>');
+  dl.append('dd').text(data.length);
+
+  // Total commits
+  dl.append('dt').text('Total commits');
+  dl.append('dd').text(commits.length);
+
+  // --- Extra stats (pick 3–4) ---
+
+  // 1) Number of files in the codebase
+  const numFiles = d3.group(data, (d) => d.file).size;
+  dl.append('dt').text('Files');
+  dl.append('dd').text(numFiles);
+
+  // Compute per-file lengths first (max line number per file)
+  const fileLengths = d3.rollups(
+    data,
+    (v) => d3.max(v, (d) => d.line),
+    (d) => d.file
+  );
+
+  // 2) Longest file (name + length)
+  const [longestFileName, longestFileLen] =
+    d3.greatest(fileLengths, (d) => d[1]);
+  dl.append('dt').text('Longest file');
+  dl.append('dd').text(`${longestFileName} (${longestFileLen} lines)`);
+
+  // 3) Average file length (in lines)
+  const avgFileLength = d3.mean(fileLengths, (d) => d[1]);
+  dl.append('dt').text('Average file length');
+  dl.append('dd').text(`${avgFileLength.toFixed(1)} lines`);
+
+  // 4) Time of day that most work is done
+  const workByPeriod = d3.rollups(
+    data,
+    (v) => v.length,
+    (d) => d.datetime.toLocaleString('en', { dayPeriod: 'short' })
+    // usually "morning", "afternoon", "evening", "night"
+  );
+  const mostActivePeriod = d3.greatest(workByPeriod, (d) => d[1])?.[0];
+
+  if (mostActivePeriod) {
+    dl.append('dt').text('Most active time of day');
+    dl.append('dd').text(mostActivePeriod);
+  }
+}

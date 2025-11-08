@@ -352,6 +352,20 @@ label.color-scheme select {
   }
 }
 
+.stats {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.stats dt {
+  font-weight: 600;
+}
+
+.stats dd {
+  margin: 0;
+}
 
 
 
