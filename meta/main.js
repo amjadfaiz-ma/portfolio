@@ -29,7 +29,7 @@ function processCommits(data) {
       const ret = {
         id: commit,
         // you can change this URL to your own repo if needed
-        url: 'https://github.com/vis-society/lab-7/commit/' + commit,
+        url: 'https://github.com/amjadfaiz-ma/portfolio/commit/' + commit,
         author,
         date,
         time,
