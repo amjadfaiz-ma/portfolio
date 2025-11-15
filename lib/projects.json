@@ -1,9 +1,10 @@
 [
     {
-        "title": "Lorem ipsum dolor",
-        "year": "2023",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit."
+        "title": "Bike Watching",
+        "year": "2025",
+        "image": "images/BikeWatching.png",
+        "description": "DSC106 Lab 7: Working with Geospatial Visualization.",
+        "url": "https://amjadfaiz-ma.github.io/bikewatching/"
     },
     {
         "title": "Consequuntur magni dolore",
@@ -31,7 +32,7 @@
     },
     {
         "title": "Adipisci similique tenetur",
-        "year": "2025",
+        "year": "2023",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Aliquid hic deleniti minus reiciendis, soluta ducimus exercitationem."
     },
