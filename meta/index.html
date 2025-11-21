@@ -14,19 +14,28 @@
 
   <main>
     <!-- Step 1.1: Slider UI for commit filtering -->
-    <div id="time-filter" style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
+    <div
+      id="time-filter"
+      style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem;"
+    >
       <label for="commit-progress">Show commits until:</label>
-      <input type="range" id="commit-progress" min="0" max="100" value="100">
+      <input
+        type="range"
+        id="commit-progress"
+        min="0"
+        max="100"
+        value="100"
+      />
       <time id="commit-time" style="margin-left: auto;">Loading...</time>
     </div>
 
-    <!-- Placeholder for summary stats -->
+    <!-- Summary stats -->
     <div id="stats"></div>
-    
-    <div id="scrolly-1">
 
+    <!-- Scrollytelling Part 1: commits over time -->
+    <div id="scrolly-1">
       <div id="scatter-story">
-        <!-- Step text will be injected by JS -->
+        <!-- Commit narrative steps injected by JS -->
       </div>
 
       <div id="scatter-plot">
@@ -37,39 +46,47 @@
         <p id="selection-count">No commits selected</p>
         <dl id="language-breakdown" class="stats"></dl>
       </div>
-
     </div>
-    
-    <!-- Step 3: tooltip for hovered commit -->
+
+    <!-- Tooltip for hovered commit -->
     <dl id="commit-tooltip" class="info tooltip" hidden>
-    <dt>Commit</dt>
-    <dd>
+      <dt>Commit</dt>
+      <dd>
         <a href="" id="commit-link" target="_blank" rel="noreferrer"></a>
-    </dd>
+      </dd>
 
-    <dt>Date</dt>
-    <dd id="commit-date"></dd>
+      <dt>Date</dt>
+      <dd id="commit-date"></dd>
 
-    <dt>Time</dt>
-    <dd id="commit-time"></dd>
+      <dt>Time</dt>
+      <dd id="commit-time"></dd>
 
-    <dt>Author</dt>
-    <dd id="commit-author"></dd>
+      <dt>Author</dt>
+      <dd id="commit-author"></dd>
 
-    <dt>Lines edited</dt>
-    <dd id="commit-lines"></dd>
+      <dt>Lines edited</dt>
+      <dd id="commit-lines"></dd>
     </dl>
 
-    <!-- Step 2: file unit visualization -->
-    <dl id="files">
-      <!-- populated by D3 -->
-    </dl>
+    <!-- Scrollytelling Part 2: file sizes / unit visualization -->
+    <div id="scrolly-2">
+      <div id="files-story">
+        <!-- File-size narrative steps injected by JS -->
+      </div>
+
+      <div id="files-plot">
+        <h2>Evolution of File Sizes</h2>
+        <dl id="files">
+          <!-- File unit visualization populated by JS -->
+        </dl>
+      </div>
+    </div>
   </main>
 
   <!-- Global navigation -->
   <script type="module" src="../global.js"></script>
 
-  <!-- D3 logic for CSV loading -->
+  <!-- D3 + Scrollama logic for meta page -->
   <script type="module" src="main.js"></script>
 </body>
 </html>

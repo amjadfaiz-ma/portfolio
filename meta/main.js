@@ -414,6 +414,25 @@ function generateScrollySteps(commits) {
     `);
 }
 
+function generateFileSteps(commits) {
+  d3.select('#files-story')
+    .selectAll('.step')
+    .data(commits)
+    .join('div')
+    .attr('class', 'step')
+    .html(d => {
+      const uniqueFiles = d3.rollups(d.lines, v => v.length, x => x.file).length;
+      return `
+        <p>
+          After this commit (<code>${d.id.slice(0,7)}</code>),
+          the project grew to affect <strong>${uniqueFiles}</strong> files.
+          Scroll to see how file sizes evolve.
+        </p>
+      `;
+    });
+}
+
+
 function updateFileDisplay(filteredCommits) {
   // Step 2.1: get all lines from filtered commits
   const lines = filteredCommits.flatMap(d => d.lines);
@@ -525,6 +544,7 @@ onTimeSliderChange();
 renderCommitInfo(data, commits);
 renderScatterPlot(data, commits);
 generateScrollySteps(commits);
+generateFileSteps(commits);
 
 // -----------------------------------------------------
 // Step 3.3: Scrollama — Update scatter plot on scroll
@@ -556,6 +576,30 @@ scroller
     offset: 0.5,   // triggers when step hits middle
   })
   .onStepEnter(onStepEnter);
+
+  // -----------------------------------------------------
+// Step 4: Scrollama for file-size race
+// -----------------------------------------------------
+function onFileStepEnter(response) {
+  const commit = response.element.__data__;
+
+  // same filtering as scatter section
+  const commitTime = commit.datetime;
+  const filtered = commits.filter(d => d.datetime <= commitTime);
+
+  // update the file-size visualization
+  updateFileDisplay(filtered);
+}
+
+const fileScroller = scrollama();
+fileScroller
+  .setup({
+    container: '#scrolly-2',
+    step: '#scrolly-2 .step',
+    offset: 0.5,
+  })
+  .onStepEnter(onFileStepEnter);
+
 
 
 

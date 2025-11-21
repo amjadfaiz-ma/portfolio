@@ -532,6 +532,34 @@ circle:hover {
   padding-bottom: 70vh; /* enough scroll gap */
 }
 
+/* --- Scrollytelling Layout #2 (files) --- */
+
+#scrolly-2 {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  margin-top: 4rem;
+}
+
+#scrolly-2 > * {
+  flex: 1;
+}
+
+#files-story {
+  position: relative;
+}
+
+#files-plot {
+  position: sticky;
+  top: 0;
+  height: 50vh;
+  overflow: visible;
+}
+
+#files-story .step {
+  padding-bottom: 70vh;
+}
+
 
 
 
