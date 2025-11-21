@@ -529,7 +529,7 @@ circle:hover {
 
 /* Optional: add space between story steps */
 .step {
-  padding-bottom: 70vh; /* enough scroll gap */
+  padding-bottom: 15vh; /* enough scroll gap */
 }
 
 /* --- Scrollytelling Layout #2 (files) --- */
