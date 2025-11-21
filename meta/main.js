@@ -13,6 +13,8 @@ let timeScale;
 let commitMaxTime;
 let filteredCommits;
 
+let colors = d3.scaleOrdinal(d3.schemeTableau10);
+
 
 // -----------------------------
 // Step 1.1: load and clean CSV
@@ -385,6 +387,64 @@ function updateScatterPlot(data, commits) {
     });
 }
 
+function updateFileDisplay(filteredCommits) {
+  // Step 2.1: get all lines from filtered commits
+  const lines = filteredCommits.flatMap(d => d.lines);
+
+  // group by file, attach lines + dominant type, then sort by size (Step 2.3)
+  let files = d3
+    .groups(lines, d => d.file)
+    .map(([name, lines]) => {
+      // find most common type in this file (for color)
+      const typeCounts = d3.rollups(
+        lines,
+        v => v.length,
+        d => d.type
+      ).sort((a, b) => b[1] - a[1]);
+
+      const mainType = typeCounts.length ? typeCounts[0][0] : null;
+
+      return { name, lines, type: mainType };
+    })
+    .sort((a, b) => b.lines.length - a.lines.length); // Step 2.3
+
+  // bind files to <div>s inside #files
+  const filesContainer = d3
+    .select('#files')
+    .selectAll('div')
+    .data(files, d => d.name)
+    .join(
+      enter =>
+        enter.append('div').call(div => {
+          div.append('dt').append('code');
+          div.append('dd');
+        }),
+      update => update,
+      exit => exit.remove()
+    );
+
+  // set filename + total lines in <dt> (Step 2.2 hint to show count)
+  filesContainer
+    .select('dt > code')
+    .html(d => `
+      ${d.name}
+      <br>
+      <small>${d.lines.length} lines</small>
+    `);
+
+  // set a CSS variable for color based on technology (Step 2.4)
+  filesContainer.attr('style', d =>
+    d.type ? `--color: ${colors(d.type)}` : null
+  );
+
+  // Step 2.2: inside each <dd>, draw one .loc div per line
+  filesContainer
+    .select('dd')
+    .selectAll('div')
+    .data(d => d.lines)
+    .join('div')
+    .attr('class', 'loc');
+}
 
 function onTimeSliderChange() {
   commitProgress = +document.getElementById("commit-progress").value;
@@ -402,8 +462,10 @@ function onTimeSliderChange() {
 
   // update scatter plot
   updateScatterPlot(data, filteredCommits);
-}
 
+  // update file unit visualization (Step 2.1–2.4)
+  updateFileDisplay(filteredCommits);
+}
 
 // -------------------
 // Run everything
@@ -422,14 +484,18 @@ timeScale = d3.scaleTime()
 commitMaxTime = timeScale.invert(commitProgress);
 filteredCommits = commits;
 
+// initial file display
+updateFileDisplay(filteredCommits);
+
 // Step 1.1: slider setup
 const slider = document.getElementById("commit-progress");
 slider.addEventListener("input", onTimeSliderChange);
 
-// initialize time display
+// initialize time display + filtered views
 onTimeSliderChange();
 
 // initial render
 renderCommitInfo(data, commits);
 renderScatterPlot(data, commits);
+
 
