@@ -453,4 +453,13 @@ circle:hover {
   transform: scale(1.5);
 }
 
+.dots circle {
+  transition: all 200ms ease;
+
+  @starting-style {
+    r: 0;
+  }
+}
+
+
 
