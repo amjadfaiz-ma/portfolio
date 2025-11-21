@@ -1,5 +1,6 @@
 // meta/main.js
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+import scrollama from 'https://cdn.jsdelivr.net/npm/scrollama@3.2.0/+esm';
 
 // x/y scales need to be accessible from brushing helpers
 let xScale;
@@ -387,6 +388,32 @@ function updateScatterPlot(data, commits) {
     });
 }
 
+// --------------------------------------------
+// Step 3.2: Insert scrolly steps for each commit
+// --------------------------------------------
+function generateScrollySteps(commits) {
+  d3.select('#scatter-story')
+    .selectAll('.step')
+    .data(commits)
+    .join('div')
+    .attr('class', 'step')
+    .html((d, i) => `
+      <p>
+        On ${d.datetime.toLocaleString('en', {
+          dateStyle: 'full',
+          timeStyle: 'short',
+        })},
+        I made
+        <a href="${d.url}" target="_blank">
+          ${i > 0 ? 'another glorious commit' : 'my very first glorious commit'}
+        </a>.
+        I edited ${d.totalLines} lines across ${
+          d3.rollups(d.lines, v => v.length, dd => dd.file).length
+        } files.
+      </p>
+    `);
+}
+
 function updateFileDisplay(filteredCommits) {
   // Step 2.1: get all lines from filtered commits
   const lines = filteredCommits.flatMap(d => d.lines);
@@ -497,5 +524,38 @@ onTimeSliderChange();
 // initial render
 renderCommitInfo(data, commits);
 renderScatterPlot(data, commits);
+generateScrollySteps(commits);
+
+// -----------------------------------------------------
+// Step 3.3: Scrollama — Update scatter plot on scroll
+// -----------------------------------------------------
+
+function onStepEnter(response) {
+  const commit = response.element.__data__;
+
+  // Update slider-bound filtered commits so plot reflects this commit
+  commitMaxTime = commit.datetime;
+  filteredCommits = commits.filter(d => d.datetime <= commitMaxTime);
+
+  // Update plot + files, same as slider
+  updateScatterPlot(data, filteredCommits);
+  updateFileDisplay(filteredCommits);
+
+  document.getElementById("commit-time").textContent =
+    commit.datetime.toLocaleString("en", {
+      dateStyle: "long",
+      timeStyle: "short",
+    });
+}
+
+const scroller = scrollama();
+scroller
+  .setup({
+    container: '#scrolly-1',
+    step: '#scrolly-1 .step',
+    offset: 0.5,   // triggers when step hits middle
+  })
+  .onStepEnter(onStepEnter);
+
 
 

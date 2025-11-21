@@ -502,6 +502,36 @@ circle:hover {
   border-radius: 50%;
 }
 
+/* --- Scrollytelling Layout --- */
+
+#scrolly-1 {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+}
+
+#scrolly-1 > * {
+  flex: 1;
+}
+
+#scatter-story {
+  position: relative;
+}
+
+#scatter-plot {
+  position: sticky;
+  top: 0;
+  left: 0;
+  bottom: auto;
+  height: 50vh;   /* REQUIRED for sticky to work */
+  overflow: visible;
+}
+
+/* Optional: add space between story steps */
+.step {
+  padding-bottom: 70vh; /* enough scroll gap */
+}
+
 
 
 

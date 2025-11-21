@@ -20,23 +20,25 @@
       <time id="commit-time" style="margin-left: auto;">Loading...</time>
     </div>
 
-    <!-- Step 2: file unit visualization -->
-    <dl id="files">
-      <!-- populated by D3 -->
-    </dl>
-    
     <!-- Placeholder for summary stats -->
     <div id="stats"></div>
     
-    <!-- Step 2: scatterplot -->
-    <h2>Commits by time of day</h2>
-    <div id="chart"></div>
+    <div id="scrolly-1">
 
-    <!-- Step 5.5: selection count -->
-    <p id="selection-count">No commits selected</p>
+      <div id="scatter-story">
+        <!-- Step text will be injected by JS -->
+      </div>
 
-    <!-- Step 5.6: language breakdown for selected commits -->
-    <dl id="language-breakdown" class="stats"></dl>
+      <div id="scatter-plot">
+        <h2>Commits by time of day</h2>
+        <div id="chart"></div>
+
+        <!-- Brush outputs stay inside the sticky section -->
+        <p id="selection-count">No commits selected</p>
+        <dl id="language-breakdown" class="stats"></dl>
+      </div>
+
+    </div>
     
     <!-- Step 3: tooltip for hovered commit -->
     <dl id="commit-tooltip" class="info tooltip" hidden>
@@ -56,6 +58,11 @@
 
     <dt>Lines edited</dt>
     <dd id="commit-lines"></dd>
+    </dl>
+
+    <!-- Step 2: file unit visualization -->
+    <dl id="files">
+      <!-- populated by D3 -->
     </dl>
   </main>
 
