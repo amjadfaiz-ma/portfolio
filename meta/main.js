@@ -5,6 +5,15 @@ import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 let xScale;
 let yScale;
 
+// ------------------------
+// Step 1 filtering globals
+// ------------------------
+let commitProgress = 100;
+let timeScale;
+let commitMaxTime;
+let filteredCommits;
+
+
 // -----------------------------
 // Step 1.1: load and clean CSV
 // -----------------------------
@@ -292,6 +301,7 @@ function renderScatterPlot(data, commits) {
 
   svg
     .append('g')
+    .attr('class', 'x-axis')   // NEW
     .attr('transform', `translate(0, ${usableArea.bottom})`)
     .call(xAxis);
 
@@ -333,11 +343,93 @@ function renderScatterPlot(data, commits) {
   createBrushSelector(svg);
 }
 
+function updateScatterPlot(data, commits) {
+  const svg = d3.select("#chart").select("svg");
+  if (svg.empty()) return;
+
+  // Update x-domain
+  xScale.domain(d3.extent(commits, d => d.datetime));
+
+  // Update x-axis
+  const xAxisGroup = svg.select("g.x-axis");
+  const xAxis = d3.axisBottom(xScale);
+  xAxisGroup.selectAll("*").remove();
+  xAxisGroup.call(xAxis);
+
+  // Update radii
+  const [minLines, maxLines] = d3.extent(commits, d => d.totalLines);
+  const rScale = d3.scaleSqrt().domain([minLines, maxLines]).range([2, 30]);
+
+  // Update dots
+  const dots = svg.select("g.dots");
+
+  const sorted = d3.sort(commits, d => -d.totalLines);
+  dots
+    .selectAll("circle")
+    .data(sorted, d => d.id) // key by commit id
+    .join("circle")
+    .attr("cx", d => xScale(d.datetime))
+    .attr("cy", d => yScale(d.hourFrac))
+    .attr("r", d => rScale(d.totalLines))
+    .attr("fill", "steelblue")
+    .style("fill-opacity", 0.7)
+    .on("mouseenter", (event, commit) => {
+      d3.select(event.currentTarget).style("fill-opacity", 1);
+      renderTooltipContent(commit);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
+    })
+    .on("mouseleave", (event) => {
+      d3.select(event.currentTarget).style("fill-opacity", 0.7);
+      updateTooltipVisibility(false);
+    });
+}
+
+
+function onTimeSliderChange() {
+  commitProgress = +document.getElementById("commit-progress").value;
+  commitMaxTime = timeScale.invert(commitProgress);
+
+  // update time display
+  document.getElementById("commit-time").textContent =
+    commitMaxTime.toLocaleString("en", {
+      dateStyle: "long",
+      timeStyle: "short",
+    });
+
+  // filter commits
+  filteredCommits = commits.filter(d => d.datetime <= commitMaxTime);
+
+  // update scatter plot
+  updateScatterPlot(data, filteredCommits);
+}
+
+
 // -------------------
 // Run everything
 // -------------------
 const data = await loadData();
 const commits = processCommits(data);
 
+// Step 1.2: time scale for filtering
+timeScale = d3.scaleTime()
+  .domain([
+    d3.min(commits, d => d.datetime),
+    d3.max(commits, d => d.datetime)
+  ])
+  .range([0, 100]);
+
+commitMaxTime = timeScale.invert(commitProgress);
+filteredCommits = commits;
+
+// Step 1.1: slider setup
+const slider = document.getElementById("commit-progress");
+slider.addEventListener("input", onTimeSliderChange);
+
+// initialize time display
+onTimeSliderChange();
+
+// initial render
 renderCommitInfo(data, commits);
 renderScatterPlot(data, commits);
+
